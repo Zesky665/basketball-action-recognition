@@ -5,7 +5,7 @@ import json
 import os
 
 
-def augmentVideo(annotation_dict, labels_dict, data_dir='dataset/examples/', output_dir='augmented-videos/'):
+def augmentVideo(annotation_dict, labels_dict, data_dir='dataset/videos/', output_dir='dataset/augmented-videos/'):
     """
     Takes in annotation dictionary, labels dictionary, path to the directory of data, and the output directory
     :param annotation_dict: Dictionary of basketball action annotations
@@ -63,7 +63,7 @@ def augmentVideo(annotation_dict, labels_dict, data_dir='dataset/examples/', out
         pbar.set_description('Percentage {} '.format(i/len(video_list)))
 
     # Add to augmented_annotations
-    with open('augmented_annotation_dict.json', 'w') as fp:
+    with open('dataset/augmented_annotation_dict.json', 'w') as fp:
         json.dump(augmented_annotation, fp)
 
 def rotateVideo(path, output_dir, video_id, degree):
@@ -118,8 +118,8 @@ def keystoint(x):
     return {int(k): v for k, v in x.items()}
     
 if __name__ == "__main__":
-    annotation_dict = "annotation_dict.json"
-    labels_dict = "labels_dict.json"
+    annotation_dict = "dataset/annotation_dict.json"
+    labels_dict = "dataset/labels_dict.json"
     
 
     augmentVideo(annotation_dict, labels_dict)
