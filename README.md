@@ -16,7 +16,7 @@ With venv:
 
 ### Dataset
 
-1. Download the dataset from the follwoing link:
+1. Download the dataset from the following link:
 https://www.kaggle.com/datasets/antocommii/spacejam-action-recognition
 
 The link provided in the original repo seems to have some issue with it. 
@@ -24,6 +24,9 @@ The link provided in the original repo seems to have some issue with it.
 2. Augment the dataset. 
 Run the `augment_videos.py` script. 
 
+### Train 
+
+Open the `overfit_small_dataset.ipnyb` and press run all. 
 
 ### Run the model
 
