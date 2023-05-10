@@ -35,8 +35,6 @@ def save_weights(model, args, epoch, optimizer):
     }
 
     if not os.path.exists(args.model_path):
-        os.mkdir("model")
-        os.mkdir("model/r2plus1d_overfit/")
         os.mkdir(args.model_path)
 
     model_name = '{}_{}_{}'.format(args.base_model_name, epoch, args.lr)

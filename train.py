@@ -18,6 +18,8 @@ from torch.utils.data import DataLoader, random_split
 from dataset import BasketballDataset
 from utils.checkpoints import init_session_history, save_weights, load_weights, write_history, read_history, plot_curves
 from utils.metrics import get_acc_f1_precision_recall
+from torch.utils.data import Subset
+
 
 args = EasyDict({
 
@@ -45,7 +47,7 @@ args = EasyDict({
     'history_path': "histories/history_r2plus1d_augmented-2.txt"
 })
 
-def train_model(model, dataloaders, criterion, optimizer, args, start_epoch=1, num_epochs=25):
+def train_model(model, dataloaders, criterion, optimizer, args, start_epoch=1, num_epochs=3):
     """
     Trains the 3D CNN Model
     :param model: Model object that we will train
@@ -56,11 +58,10 @@ def train_model(model, dataloaders, criterion, optimizer, args, start_epoch=1, n
     :param num_epochs: Number of epochs during training
     :return: model, train_loss_history, val_loss_history, train_acc_history, val_acc_history, train_f1_score, val_f1_score, plot_epoch
     """
-
-    # Initializes Session History in the history file
+# Initializes Session History in the history file
     init_session_history(args)
     since = time.time()
-
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_acc_history = []
     val_acc_history = []
     train_loss_history = []
@@ -91,6 +92,7 @@ def train_model(model, dataloaders, criterion, optimizer, args, start_epoch=1, n
 
             pbar = tqdm(dataloaders[phase])
             # Iterate over data.
+            i = 0
             for sample in pbar:
                 inputs = sample["video"]
                 labels = sample["action"]
@@ -129,6 +131,9 @@ def train_model(model, dataloaders, criterion, optimizer, args, start_epoch=1, n
 
                 pbar.set_description('Phase: {} || Epoch: {} || Loss {:.5f} '.format(phase, epoch, running_loss / train_n_total))
                 train_n_total += 1
+                i+=1
+                if i==10:
+                    break
 
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
             epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
@@ -241,10 +246,10 @@ def check_accuracy(loader, model):
 if __name__ == "__main__":
     print("PyTorch Version: ", torch.__version__)
     print("Torchvision Version: ", torchvision.__version__)
-    print("Current Device: ", torch.cuda.current_device())
-    print("Device: ", torch.cuda.device(0))
-    print("Cuda Is Available: ", torch.cuda.is_available())
-    print("Device Count: ", torch.cuda.device_count())
+    # print("Current Device: ", torch.cuda.current_device())
+    # print("Device: ", torch.cuda.device(0))
+    # print("Cuda Is Available: ", torch.cuda.is_available())
+    # print("Device Count: ", torch.cuda.device_count())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -282,28 +287,39 @@ if __name__ == "__main__":
         print('Cached:   ', round(torch.cuda.memory_reserved(0) / 1024 ** 3, 1), 'GB')
         print(" ")
 
-    # Transforms
-    sometimes = lambda aug: vidaug.Sometimes(0.5, aug)  # Used to apply augmentor with 50% probability
-    video_augmentation = vidaug.Sequential([
-        sometimes(vidaug.Salt()),
-        sometimes(vidaug.Pepper()),
-    ], random_order=True)
+    # # Transforms
+    # sometimes = lambda aug: vidaug.Sometimes(0.5, aug)  # Used to apply augmentor with 50% probability
+    # video_augmentation = vidaug.Sequential([
+    #     sometimes(vidaug.Salt()),
+    #     sometimes(vidaug.Pepper()),
+    # ], random_order=True)
 
     #Load Dataset
     basketball_dataset = BasketballDataset(annotation_dict=args.annotation_path,
                                            augmented_dict=args.augmented_annotation_path)
 
-    train_subset, test_subset = random_split(
-    basketball_dataset, [args.n_total-args.test_n, args.test_n], generator=torch.Generator().manual_seed(1))
-
-    train_subset, val_subset = random_split(
-        train_subset, [args.n_total-args.test_n-args.val_n, args.val_n], generator=torch.Generator().manual_seed(1))
-
-    train_loader = DataLoader(dataset=train_subset, shuffle=True, batch_size=args.batch_size)
-    val_loader = DataLoader(dataset=val_subset, shuffle=False, batch_size=args.batch_size)
-    test_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=args.batch_size)
-
+    train_dataset_size = len(basketball_dataset)
+    train_dataset_indices = list(range(train_dataset_size))
+    np.random.shuffle(train_dataset_indices)
+    train_idx = train_dataset_indices[:100]
+    test_idx = train_dataset_indices[100:200]
+    train_subset = Subset(basketball_dataset, train_idx)
+    test_subset = Subset(basketball_dataset, test_idx)
+    train_loader = DataLoader(dataset=train_subset, shuffle=False, batch_size=10)
+    val_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=10)
     dataloaders_dict = {'train': train_loader, 'val': val_loader}
+    
+    # train_subset, test_subset = random_split(
+    # basketball_dataset, [args.n_total-args.test_n, args.test_n], generator=torch.Generator().manual_seed(1))
+
+    # train_subset, val_subset = random_split(
+    #     train_subset, [args.n_total-args.test_n-args.val_n, args.val_n], generator=torch.Generator().manual_seed(1))
+
+    # train_loader = DataLoader(dataset=train_subset, shuffle=True, batch_size=args.batch_size)
+    # val_loader = DataLoader(dataset=val_subset, shuffle=False, batch_size=args.batch_size)
+    # test_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=args.batch_size)
+
+    # dataloaders_dict = {'train': train_loader, 'val': val_loader}
 
     # Train
     optimizer_ft = optim.Adam(params_to_update, lr=args.lr)

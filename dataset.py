@@ -10,7 +10,7 @@ from torchvision import transforms
 class BasketballDataset(Dataset):
     """SpaceJam: a Dataset for Basketball Action Recognition."""
 
-    def __init__(self, annotation_dict, augmented_dict, video_dir="dataset/augmented-videos/", augmented_dir="dataset/augmented-videos/", augment=True, transform=None, poseData=False):
+    def __init__(self, annotation_dict, augmented_dict, video_dir="dataset/examples/", augmented_dir="dataset/augmented-videos/", augment=True, transform=None, poseData=False):
         with open(annotation_dict) as f:
             self.video_list = list(json.load(f).items())
 
