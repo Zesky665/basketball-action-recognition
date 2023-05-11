@@ -34,6 +34,12 @@ def save_weights(model, args, epoch, optimizer):
         'optimizer': optimizer.state_dict()
     }
 
+    if not os.path.exists("model_checkpoints"):
+        os.mkdir("model_checkpoints")
+
+    if not os.path.exists("model_checkpoints/r2plus1d_augmented-2/"):
+        os.mkdir("model_checkpoints/r2plus1d_augmented-2/")
+
     if not os.path.exists(args.model_path):
         os.mkdir(args.model_path)
 
@@ -223,7 +229,7 @@ def read_history(history_path):
                 # case for getting checkpoint epoch
                 if 'checkpoint' in line:
                     print(line)
-                    plot_epoch.append(int(line.split('_')[-2]))
+                    plot_epoch.append(int(line.split('-')[-2]))
 
                 # case for getting train data for epoch
                 elif 'train' in line and 'arguments' not in line:

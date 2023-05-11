@@ -359,9 +359,9 @@ if __name__ == "__main__":
     )
 
     # Read History
-    read_history(args.history_path)
+    #read_history(args.history_path)
 
     # Check Accuracy with Test Set
-    check_accuracy(test_loader, model)
+    check_accuracy(val_loader, model)
 
 

@@ -10,7 +10,7 @@ The original was a bit messy. This version should be able to run without any twe
 
 With venv:
 1. Run `python -m venv space-jam-fork`
-2. Select `space-jam-form` as the python env in vscode. 
+2. Select `space-jam-fork` as the python env in vscode. 
 3. Run `source space-jam-fork/bin/activate`
 4. Install packages with `pip install -r requirements.txt`
 
