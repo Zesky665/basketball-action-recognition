@@ -1,4 +1,4 @@
-numpy>=1.24.3
+numpy>=1.22
 tqdm>=4.65.0
 easydict>=1.10
 scikit-learn>=1.2.2
