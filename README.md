@@ -26,7 +26,11 @@ Run the `augment_videos.py` script.
 
 ### Train 
 
-Open the `overfit_small_dataset.ipnyb` and press run all. 
+Run the `train.py` script.
+`python train.py`
+
+The train.py script is automatically set to TEST mode. 
+To Set to to TRAIN mode, open the file and change the TRAIN global value to True. 
 
 ### Run the model
 

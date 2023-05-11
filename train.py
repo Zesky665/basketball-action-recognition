@@ -8,6 +8,7 @@ from tqdm import tqdm
 from easydict import EasyDict
 from sklearn.metrics import confusion_matrix
 
+import tensorflow as tf
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -20,7 +21,7 @@ from utils.checkpoints import init_session_history, save_weights, load_weights, 
 from utils.metrics import get_acc_f1_precision_recall
 from torch.utils.data import Subset
 
-
+TRAIN = False
 args = EasyDict({
 
     'base_model_name': 'r2plus1d_multiclass',
@@ -298,29 +299,32 @@ if __name__ == "__main__":
     basketball_dataset = BasketballDataset(annotation_dict=args.annotation_path,
                                            augmented_dict=args.augmented_annotation_path)
 
-    train_dataset_size = len(basketball_dataset)
-    train_dataset_indices = list(range(train_dataset_size))
-    np.random.shuffle(train_dataset_indices)
-    train_idx = train_dataset_indices[:100]
-    test_idx = train_dataset_indices[100:200]
-    train_subset = Subset(basketball_dataset, train_idx)
-    test_subset = Subset(basketball_dataset, test_idx)
-    train_loader = DataLoader(dataset=train_subset, shuffle=False, batch_size=10)
-    val_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=10)
-    dataloaders_dict = {'train': train_loader, 'val': val_loader}
+    if TRAIN == True:
+
+        train_subset, test_subset = random_split(
+        basketball_dataset, [args.n_total-args.test_n, args.test_n], generator=torch.Generator().manual_seed(1))
+
+        train_subset, val_subset = random_split(
+        train_subset, [args.n_total-args.test_n-args.val_n, args.val_n], generator=torch.Generator().manual_seed(1))
+
+        train_loader = DataLoader(dataset=train_subset, shuffle=True, batch_size=args.batch_size)
+        val_loader = DataLoader(dataset=val_subset, shuffle=False, batch_size=args.batch_size)
+        test_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=args.batch_size)
+
+        dataloaders_dict = {'train': train_loader, 'val': val_loader}
+    else:
+        train_dataset_size = len(basketball_dataset)
+        train_dataset_indices = list(range(train_dataset_size))
+        np.random.shuffle(train_dataset_indices)
+        train_idx = train_dataset_indices[:100]
+        test_idx = train_dataset_indices[100:200]
+        train_subset = Subset(basketball_dataset, train_idx)
+        test_subset = Subset(basketball_dataset, test_idx)
+        train_loader = DataLoader(dataset=train_subset, shuffle=False, batch_size=10)
+        val_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=10)
+        dataloaders_dict = {'train': train_loader, 'val': val_loader}
     
-    # train_subset, test_subset = random_split(
-    # basketball_dataset, [args.n_total-args.test_n, args.test_n], generator=torch.Generator().manual_seed(1))
-
-    # train_subset, val_subset = random_split(
-    #     train_subset, [args.n_total-args.test_n-args.val_n, args.val_n], generator=torch.Generator().manual_seed(1))
-
-    # train_loader = DataLoader(dataset=train_subset, shuffle=True, batch_size=args.batch_size)
-    # val_loader = DataLoader(dataset=val_subset, shuffle=False, batch_size=args.batch_size)
-    # test_loader = DataLoader(dataset=test_subset, shuffle=False, batch_size=args.batch_size)
-
-    # dataloaders_dict = {'train': train_loader, 'val': val_loader}
-
+    
     # Train
     optimizer_ft = optim.Adam(params_to_update, lr=args.lr)
 
@@ -333,6 +337,12 @@ if __name__ == "__main__":
         # Put model into device after updating parameters
         model = model.to(device)
         criterion = criterion.to(device)
+
+    # Define our metrics
+    train_loss = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
+    train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy('train_accuracy')
+    test_loss = tf.keras.metrics.Mean('test_loss', dtype=tf.float32)
+    test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy('test_accuracy')
 
     # Train and evaluate
     model, train_loss_history, val_loss_history, train_acc_history, val_acc_history, train_f1_score, val_f1_score, plot_epoch = train_model(model,
