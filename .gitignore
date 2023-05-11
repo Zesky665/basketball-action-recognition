@@ -2,3 +2,4 @@ Dataset/dump_S3D_and_weightE20_final_AIM.pth
 *.mp4
 *.npy
 space-jam-fork/*
+old_setup/*
