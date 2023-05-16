@@ -45,7 +45,6 @@ def save_weights(model, args, epoch, optimizer):
 
     model_name = '{}_{}_{}'.format(args.base_model_name, epoch, args.lr)
     torch.save(state, '{}/{}.pt'.format(args.model_path, model_name))
-    model.save(f'model/my_model-{model_name}')
     return model_name
 
 def load_weights(model, args):
