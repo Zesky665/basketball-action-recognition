@@ -25,8 +25,6 @@ Download the zip, uncompress it and move the `examples` folder into the Dataset 
 2. Augment the dataset. 
 Run the `augment_videos.py` script. 
 
-3. Download yolov3.weights from [github](https://github.com/patrick013/Object-Detection---Yolov3/blob/master/model/yolov3.weights) and place in repo next to yolov3.cfg.
-
 ### Train 
 
 Run the `train.py` script.
