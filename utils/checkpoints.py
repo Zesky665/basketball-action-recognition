@@ -57,7 +57,7 @@ def load_weights(model, model_path):
     :return: the model with weights loaded in
     """
 
-    pretrained_dict = torch.load('{}.pt'.format(model_path))['state_dict']
+    pretrained_dict = torch.load('{}'.format(model_path))['state_dict']
     model_dict = model.state_dict()
     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
     model_dict.update(pretrained_dict)

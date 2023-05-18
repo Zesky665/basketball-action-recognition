@@ -51,7 +51,7 @@ args = EasyDict({
     'seq_length': 16,
     'vid_stride': 8,
     'output_path': "output_videos/",
-    'trained_model_path': "model_checkpoints/r2plus1d_augmented-2/r2plus1d_multiclass_5_0.0001.pt",
+    'trained_model_path': "model_checkpoints/r2plus1d_augmented-2/r2plus1d_multiclass_2_0.0001.pt",
 })
 
 def createTrackerByName(trackerType):
