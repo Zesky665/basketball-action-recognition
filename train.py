@@ -21,7 +21,7 @@ from utils.checkpoints import init_session_history, save_weights, load_weights, 
 from utils.metrics import get_acc_f1_precision_recall
 from torch.utils.data import Subset
 
-TRAIN = False
+TRAIN = True
 args = EasyDict({
 
     'base_model_name': 'r2plus1d_multiclass',
@@ -30,13 +30,13 @@ args = EasyDict({
     # training/model params
     'lr': 0.0001,
     'start_epoch': 1,
-    'num_epochs': 3,
+    'num_epochs': 50,
     'layers_list': ['layer3', 'layer4', 'fc'],
     'continue_epoch': False,
 
     # Dataset params
     'num_classes': 10,
-    'batch_size': 8,
+    'batch_size': 256,
     'n_total': 49901,
     'test_n': 4990,
     'val_n': 9980,
@@ -133,7 +133,7 @@ def train_model(model, dataloaders, criterion, optimizer, args, start_epoch=1, n
                 pbar.set_description('Phase: {} || Epoch: {} || Loss {:.5f} '.format(phase, epoch, running_loss / train_n_total))
                 train_n_total += 1
                 i+=1
-                if i==10:
+                if i==10000:
                     break
 
             epoch_loss = running_loss / len(dataloaders[phase].dataset)

@@ -19,7 +19,8 @@ With venv:
 1. Download the dataset from the following link:
 https://www.kaggle.com/datasets/antocommii/spacejam-action-recognition
 
-The link provided in the original repo seems to have some issue with it. 
+Download the zip, uncompress it and move the `examples` folder into the Dataset directory. 
+
 
 2. Augment the dataset. 
 Run the `augment_videos.py` script. 
