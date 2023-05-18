@@ -48,7 +48,7 @@ def save_weights(model, args, epoch, optimizer):
     model.save(f'model/my_model-{model_name}')
     return model_name
 
-def load_weights(model, args):
+def load_weights(model, model_path):
     """
     Loads previously trained weights into a model given an epoch and the model itself
     :param base_model_name: name of the base model in training session
@@ -58,7 +58,7 @@ def load_weights(model, args):
     :return: the model with weights loaded in
     """
 
-    pretrained_dict = torch.load('{}/{}_{}_{}.pt'.format(args.model_path, args.base_model_name, args.start_epoch, args.lr))['state_dict']
+    pretrained_dict = torch.load('{}.pt'.format(model_path))['state_dict']
     model_dict = model.state_dict()
     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
     model_dict.update(pretrained_dict)

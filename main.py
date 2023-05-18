@@ -43,15 +43,15 @@ args = EasyDict({
     'base_model_name': 'r2plus1d_multiclass',
     'pretrained': True,
     'lr': 0.0001,
-    'start_epoch': 19,
+    'start_epoch': 5,
     'num_classes': 10,
     'labels': {"0" : "block", "1" : "pass", "2" : "run", "3" : "dribble", "4" : "shoot", "5" : "ball in hand", "6" : "defense", "7" : "pick" , "8" : "no_action" , "9" : "walk" , "10" : "discard"},
-    'model_path': "model/r2plus1d_augmented-2/",
+    'model_path': "model_checkpoints/r2plus1d_augmented-2/",
     'history_path': "histories/history_r2plus1d_augmented-2.txt",
     'seq_length': 16,
     'vid_stride': 8,
-    'output_path': "output_videos/"
-
+    'output_path': "output_videos/",
+    'trained_model_path': "model_checkpoints/r2plus1d_augmented-2/r2plus1d_multiclass_5_0.0001.pt",
 })
 
 def createTrackerByName(trackerType):
@@ -514,7 +514,7 @@ def main():
     # Calculation:
     model.fc = nn.Linear(num_ftrs, args.num_classes, bias=True)
 
-    model = load_weights(model, args)
+    model = load_weights(model, args.trained_model_path)
 
     if torch.cuda.is_available():
         # Put model into device after updating parameters

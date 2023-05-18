@@ -34,6 +34,4 @@ To Set to to TRAIN mode, open the file and change the TRAIN global value to True
 
 ### Run the model
 
-Still trying to figure this one out. 
-
-The main.py file uses a built in model and manual selection. 
+1. Download yolov3 cfg and yolov3.weights 
