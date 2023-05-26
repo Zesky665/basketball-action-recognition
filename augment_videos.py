@@ -119,10 +119,3 @@ def translateVideo(path, output_dir, video_id, translate=(0,0)):
 
 def keystoint(x):
     return {int(k): v for k, v in x.items()}
-    
-if __name__ == "__main__":
-    annotation_dict = "dataset/annotation_dict.json"
-    labels_dict = "dataset/labels_dict.json"
-    
-
-    augmentVideo(annotation_dict, labels_dict)
