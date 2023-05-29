@@ -13,7 +13,7 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
     test_df = pd.DataFrame(columns=['file_name', 'class'])
     
     
-    training_data_path = "dataset/training_data/"
+    training_data_path = "Dataset\\training_data\\"
     if not os.path.exists(training_data_path):
         os.mkdir(training_data_path)
     
@@ -50,7 +50,7 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
         video_origin_path = os.path.join(video_archive_path, video_name)
         video_target_path = os.path.join(data_class_path, video_name)
         if not os.path.exists(video_target_path):
-            file_name = f'{video_target_path}/{annotation}.mp4'
+            file_name = f'{video_target_path}'
             new_row = {'file_name': file_name, 'class': video_class}
             train_df = pd.concat([train_df, pd.DataFrame([new_row])], ignore_index=True)
             shutil.copy(video_origin_path, data_class_path)
@@ -72,7 +72,7 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
             video_origin_path = os.path.join(video_archive_path, video_name)
             video_target_path = os.path.join(data_class_path, video_name)
             if not os.path.exists(video_target_path):
-                file_name = f'{video_target_path}/{annotation}.mp4'
+                file_name = f'{video_target_path}'
                 new_row = {'file_name': file_name, 'class': video_class}
                 val_df = pd.concat([val_df, pd.DataFrame([new_row])], ignore_index=True)
                 shutil.copy(video_origin_path, data_class_path)
@@ -89,7 +89,7 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
             video_origin_path = os.path.join(video_archive_path, video_name)
             video_target_path = os.path.join(data_class_path, video_name)
             if not os.path.exists(video_target_path):
-                file_name = f'{video_target_path}/{annotation}.mp4'
+                file_name = f'{video_target_path}'
                 new_row = {'file_name': file_name, 'class': video_class}
                 test_df = pd.concat([test_df, pd.DataFrame([new_row])], ignore_index=True)
                 shutil.copy(video_origin_path, data_class_path)
@@ -118,7 +118,7 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
         video_origin_path = os.path.join(augmented_video_archive_path, video_name)
         video_target_path = os.path.join(data_class_path, video_name)
         if not os.path.exists(video_target_path):
-            file_name = f'{video_target_path}/{annotation}.mp4'
+            file_name = f'{video_target_path}'
             new_row = {'file_name': file_name, 'class': video_class}
             train_df = pd.concat([train_df, pd.DataFrame([new_row])], ignore_index=True)
             shutil.copy(video_origin_path, data_class_path)
@@ -140,7 +140,7 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
             video_origin_path = os.path.join(augmented_video_archive_path, video_name)
             video_target_path = os.path.join(data_class_path, video_name)
             if not os.path.exists(video_target_path):
-                file_name = f'{video_target_path}/{annotation}.mp4'
+                file_name = f'{video_target_path}'
                 new_row = {'file_name': file_name, 'class': video_class}
                 val_df = pd.concat([val_df, pd.DataFrame([new_row])], ignore_index=True)
                 shutil.copy(video_origin_path, data_class_path)
@@ -157,24 +157,24 @@ def setup_training_data(annotation_dict_path, labels_dict_path, video_archive_pa
             video_origin_path = os.path.join(augmented_video_archive_path, video_name)
             video_target_path = os.path.join(data_class_path, video_name)
             if not os.path.exists(video_target_path):
-                file_name = f'{video_target_path}/{annotation}.mp4'
+                file_name = f'{video_target_path}'
                 new_row = {'file_name': file_name, 'class': video_class}
                 test_df = pd.concat([test_df, pd.DataFrame([new_row])], ignore_index=True)
                 shutil.copy(video_origin_path, data_class_path)
                 
-        train_df.to_csv("dataset/train.csv", sep='\t', encoding='utf-8', index=False)
-        val_df.to_csv("dataset/val.csv", sep='\t', encoding='utf-8', index=False)
-        test_df.to_csv("dataset/test.csv", sep='\t', encoding='utf-8', index=False)
+        train_df.to_csv("Dataset\\train.csv", sep='\t', encoding='utf-8', header=False, index=False)
+        val_df.to_csv("Dataset\\val.csv", sep='\t', encoding='utf-8', header=False, index=False)
+        test_df.to_csv("Dataset\\test.csv", sep='\t', encoding='utf-8', header=False, index=False)
                     
                     
 if __name__ == "__main__":
-   annotation_dict_path = "dataset/annotation_dict.json"
-   labels_dict_path = "dataset/labels_dict.json"
-   video_archive_path = "dataset/examples/"
+    annotation_dict_path = "Dataset\\annotation_dict.json"
+    labels_dict_path = "Dataset\\labels_dict.json"
+    video_archive_path = "Dataset\\examples\\"
 
 
-   augmented_duct_path = "dataset/augmented_annotation_dict.json"
-   augmented_video_archive_path = "dataset/augmented-videos/"
+    augmented_dict_path = "Dataset\\augmented_annotation_dict.json"
+    augmented_video_archive_path = "Dataset\\augmented-videos\\"
     
-   augmentVideo(annotation_dict_path, labels_dict_path)
-   setup_training_data(annotation_dict_path, labels_dict_path, video_archive_path, augmented_duct_path, augmented_video_archive_path)
+    augmentVideo(annotation_dict_path, labels_dict_path)
+    setup_training_data(annotation_dict_path, labels_dict_path, video_archive_path, augmented_dict_path, augmented_video_archive_path)
